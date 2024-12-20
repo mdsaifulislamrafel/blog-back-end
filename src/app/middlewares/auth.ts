@@ -8,7 +8,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 
 const auth = (...requestedRoles: TUserRole[]) => {
   return catchAsync(async (req, res, next) => {
-    const token = req.headers.authorization;
+    const token = req.header("Authorization")?.replace("Bearer ", "");
     // check if the token
     if (!token) {
       throw new AppError(
