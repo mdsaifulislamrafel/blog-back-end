@@ -4,7 +4,8 @@ import httpStatus from "http-status";
 import { BlogServices } from "./blog.service";
 
 const createBlog = catchAsync(async (req, res) => {
-  const result = await BlogServices.createBlogIntoDB(req.body);
+  console.log(req.user);
+  const result = await BlogServices.createBlogIntoDB(req.body, req.user.id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

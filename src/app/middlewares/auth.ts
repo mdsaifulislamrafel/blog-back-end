@@ -13,9 +13,10 @@ const auth = (...requestedRoles: TUserRole[]) => {
     if (!token) {
       throw new AppError(
         httpStatus.UNAUTHORIZED,
-        "Yor are not authorized user !"
+        "You are not authorized user!"
       );
     }
+    
     // check if the token is valid
     const decoded = jwt.verify(
       token,
@@ -36,16 +37,23 @@ const auth = (...requestedRoles: TUserRole[]) => {
       throw new AppError(httpStatus.FORBIDDEN, "Your account is blocked");
     }
 
+    // Ensure req.user contains user information including the id
+    req.user = {
+      id: user._id, 
+      email,
+      role
+    };
+
     if (requestedRoles && !requestedRoles.includes(role)) {
       throw new AppError(
         httpStatus.UNAUTHORIZED,
-        "You are not authorized user !!"
+        "You are not authorized user!"
       );
     }
 
-    req.user = decoded as JwtPayload;
     next();
   });
 };
+
 
 export default auth;
