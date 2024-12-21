@@ -3,6 +3,8 @@ import AppError from "../../errors/AppError";
 import { TBlog } from "./blog.interface";
 import { Blog } from "./blog.model";
 import httpStatus from "http-status";
+import QueryBuilder from "../../builder/QueryBuilder";
+import { searchableFields } from "./blog.const";
 
 const createBlogIntoDB = async (payload: TBlog, user: JwtPayload) => {
   const data = {
@@ -14,20 +16,23 @@ const createBlogIntoDB = async (payload: TBlog, user: JwtPayload) => {
 };
 
 const getAllPublishedBlogs = async (query: Record<string, unknown>) => {
-  let search = "";
-  console.log(query);
+  // let search = "";
+  // console.log(query);
 
-  if (query?.search) {
-    search = query.search as string;
-  }
+  // if (query?.search) {
+  //   search = query.search as string;
+  // }'{
+  //   $or: ["title", "author"].map((field) => ({
+  //     [field]: { $regex: search, $options: "i" },
+  //   })),
+  // }'
 
-  const searchQuery = Blog.find({
-    $or: ["title", "author"].map((field) => ({
-      [field]: { $regex: search, $options: "i" },
-    })),
-  }).populate("author", "name email");
+  const searchQuery = new QueryBuilder(
+    Blog.find().populate("author", "name email"),
+    query
+  ).search(searchableFields).filter().sort();
 
-  const result = await searchQuery.find(query).populate("author", "name email");
+  const result = await searchQuery.modelQuery;
   return result;
 };
 
