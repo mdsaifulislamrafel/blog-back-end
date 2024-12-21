@@ -1,4 +1,3 @@
-
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import router from "./app/router/router";
@@ -12,11 +11,13 @@ app.use(cors());
 app.use("/api", router);
 
 app.get("/", (req: Request, res: Response) => {
-  const a = 10;
-  res.send(a);
+  res.status(200).json({
+    success: true,
+    message: "Welcome to the Blog Server!",
+  });
 });
 
 app.use(globalErrorHandler);
-app.use(notFound)
+app.use(notFound);
 
 export default app;

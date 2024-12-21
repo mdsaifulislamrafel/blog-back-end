@@ -22,12 +22,12 @@ const getAllPublishedBlogs = async (query: Record<string, unknown>) => {
   }
 
   const searchQuery = Blog.find({
-    $or: ["title"].map((field) => ({
+    $or: ["title", "author"].map((field) => ({
       [field]: { $regex: search, $options: "i" },
     })),
   }).populate("author", "name email");
 
-  const result = await searchQuery.find().populate("author", "name email");
+  const result = await searchQuery.find(query).populate("author", "name email");
   return result;
 };
 
@@ -46,7 +46,7 @@ const updateBlogInDB = async (
     );
   }
   // Check if the user is the author of the blog before updating it
-  if (blog?.author?.email !== user?.email) {
+  if (!blog.author._id.equals(user.id)) {
     throw new AppError(
       httpStatus.FORBIDDEN,
       "User is not the author of the blog"
@@ -66,7 +66,7 @@ const deleteBlogFromDB = async (id: string, user: JwtPayload) => {
     throw new AppError(httpStatus.NOT_FOUND, "Blog not found");
   }
   // check if the blog is authorized to delete
-  if (blog?.author?.email !== user?.email) {
+  if (!blog.author._id.equals(user.id)) {
     throw new AppError(
       httpStatus.FORBIDDEN,
       "User is not the author of the blog"
