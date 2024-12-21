@@ -258,7 +258,7 @@ This project is a backend system for a blogging platform built using **TypeScrip
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/mdsaifulislamrafel/blog-back-end
    ```
 2. Navigate to the project directory:
    ```bash
