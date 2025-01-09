@@ -40,11 +40,11 @@ const loginUserIntoDB = async (payload: Partial<TUser>) => {
     password: user.password,
     role: user.role,
   };
-  const accessToken = jwt.sign(jwtPayload, config.jwt_secret as string, {
+  const token = jwt.sign(jwtPayload, config.jwt_secret as string, {
     expiresIn: "10d",
   });
 
-  return { accessToken };
+  return { token };
 };
 export const userServices = {
   registerUserIntoDB,
